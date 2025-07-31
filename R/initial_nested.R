@@ -44,31 +44,31 @@ initial_nested <- function(dom, y, x, index_d, wts = NULL,
     beta00 <-  matrix(beta00_vec,ncol= len_d, byrow = TRUE)
     eta00 <- ztz %*% (y - Xm %*% beta00_vec)
 
-    cluster0 <- kmeans(beta00, centers = sqrt(nr), nstart = 100)$cluster
+    # cluster0 <- kmeans(beta00, centers = sqrt(nr), nstart = 100)$cluster
+    #
+    # ### redo above again
+    # ng <- length(unique(cluster0))
+    # Ip <- diag(1,len_d,len_d)
+    # D <- matrix(0,ng*(ng-1)/2,ng)
+    # for(j in 1:(ng-1))
+    # {
+    #   indexj <- (2*ng-j)*(j-1)/2
+    #   indexvj <- indexj + (1:(ng-j))
+    #   D[indexvj,j] <- 1
+    #   D[cbind(indexvj,(j+1):ng)] <- -1
+    # }
+    # Am <- D %x% Ip
+    # AtA <- t(D)%*%D %x% Ip
 
-    ### redo above again
-    ng <- length(unique(cluster0))
-    Ip <- diag(1,len_d,len_d)
-    D <- matrix(0,ng*(ng-1)/2,ng)
-    for(j in 1:(ng-1))
-    {
-      indexj <- (2*ng-j)*(j-1)/2
-      indexvj <- indexj + (1:(ng-j))
-      D[indexvj,j] <- 1
-      D[cbind(indexvj,(j+1):ng)] <- -1
-    }
-    Am <- D %x% Ip
-    AtA <- t(D)%*%D %x% Ip
 
-
-    Xm <- xexpand(dom, uindex, n0, x_d, len_d = len_d, cluster = cluster0)
-    Xty <- t(Xm)%*% Qz %*% y
-    Xinv <- solve(t(Xm) %*% Qz %*% Xm + lam0 *AtA)
-    beta00_vec <- Xinv %*% Xty
-    beta00 <-  matrix(beta00_vec,ncol= len_d, byrow = TRUE)
-    eta00 <- ztz %*% (y - Xm %*% beta00_vec)
-
-    beta00 <- beta00[cluster0, ,drop = FALSE]
+    # Xm <- xexpand(dom, uindex, n0, x_d, len_d = len_d, cluster = cluster0)
+    # Xty <- t(Xm)%*% Qz %*% y
+    # Xinv <- solve(t(Xm) %*% Qz %*% Xm + lam0 *AtA)
+    # beta00_vec <- Xinv %*% Xty
+    # beta00 <-  matrix(beta00_vec,ncol= len_d, byrow = TRUE)
+    # eta00 <- ztz %*% (y - Xm %*% beta00_vec)
+    #
+    # beta00 <- beta00[cluster0, ,drop = FALSE]
 
     out <- list(eta = eta00, betam = beta00)
   }
@@ -78,31 +78,32 @@ initial_nested <- function(dom, y, x, index_d, wts = NULL,
     Xty <- t(Xm) %*% y
     Xinv <- inverseR(dom, x_d, lam0)
 
-    cluster0 <- kmeans(beta00, centers = sqrt(nr), nstart = 100)$cluster
+    # cluster0 <- kmeans(beta00, centers = sqrt(nr), nstart = 100)$cluster
+    #
+    # ### redo above again
+    # ng <- length(unique(cluster0))
+    # Ip <- diag(1,len_d,len_d)
+    # D <- matrix(0,ng*(ng-1)/2,ng)
+    # for(j in 1:(ng-1))
+    # {
+    #   indexj <- (2*ng-j)*(j-1)/2
+    #   indexvj <- indexj + (1:(ng-j))
+    #   D[indexvj,j] <- 1
+    #   D[cbind(indexvj,(j+1):ng)] <- -1
+    # }
+    # Am <- D %x% Ip
+    # AtA <- t(D)%*%D %x% Ip
+    #
+    #
+    # Xm <- xexpand(dom, uindex, n0,  x_d, len_d = len_d, cluster = cluster0)
+    # Xty <- t(Xm) %*% y
+    # Xinv <- solve(t(Xm) %*% Xm + lam0 *AtA)
+    #
+    # beta00_vec <- Xinv %*% Xty
+    # beta00 <-  matrix(beta00_vec,ncol= len_d, byrow = TRUE)
+    #
+    # beta00 <- beta00[cluster0, ,drop = FALSE]
 
-    ### redo above again
-    ng <- length(unique(cluster0))
-    Ip <- diag(1,len_d,len_d)
-    D <- matrix(0,ng*(ng-1)/2,ng)
-    for(j in 1:(ng-1))
-    {
-      indexj <- (2*ng-j)*(j-1)/2
-      indexvj <- indexj + (1:(ng-j))
-      D[indexvj,j] <- 1
-      D[cbind(indexvj,(j+1):ng)] <- -1
-    }
-    Am <- D %x% Ip
-    AtA <- t(D)%*%D %x% Ip
-
-
-    Xm <- xexpand(dom, uindex, n0,  x_d, len_d = len_d, cluster = cluster0)
-    Xty <- t(Xm) %*% y
-    Xinv <- solve(t(Xm) %*% Xm + lam0 *AtA)
-
-    beta00_vec <- Xinv %*% Xty
-    beta00 <-  matrix(beta00_vec,ncol= len_d, byrow = TRUE)
-
-    beta00 <- beta00[cluster0, ,drop = FALSE]
     out <- list(eta = NULL, betam = beta00)
   }
 

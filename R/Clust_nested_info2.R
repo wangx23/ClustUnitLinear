@@ -1,4 +1,4 @@
-#' Clust_nested linear model  with sampling weights, a different initial and warm start
+#' Clust_nested linear model  with sampling weights, warm start
 
 #'@param wts is the sampling weights
 #'@param dom vector for domain
@@ -50,7 +50,7 @@ Clust_nested_info2 <- function(dom, y, x, wts, index_d, lam,
 
   if(is.null(init0))
   {
-    init0 <- initial_nested(dom, y, x, index_d, wts = wts, lam0 = lam0)
+    init0 <- initial_nested(dom, y, x, index_d, lam0 = lam0)
   }
   if(is.null(vv0))
   {
@@ -222,7 +222,7 @@ Clust_nested_info_bic2 <- function(dom, y, x, wts, index_d, lamvec,
 
   if(is.null(init0))
   {
-    init0 <- initial_nested(dom, y, x, index_d, wts = wts, lam0 = lam0)
+    init0 <- initial_nested(dom, y, x, index_d, lam0 = lam0)
   }
   if(is.null(vv0))
   {

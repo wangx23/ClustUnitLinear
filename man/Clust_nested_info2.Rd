@@ -2,7 +2,7 @@
 % Please edit documentation in R/Clust_nested_info2.R
 \name{Clust_nested_info2}
 \alias{Clust_nested_info2}
-\title{Clust_nested linear model  with sampling weights, a different initial and warm start}
+\title{Clust_nested linear model  with sampling weights, warm start}
 \usage{
 Clust_nested_info2(
   dom,
@@ -32,5 +32,5 @@ Clust_nested_info2(
 \item{index_d}{the column index for different coef}
 }
 \description{
-Clust_nested linear model  with sampling weights, a different initial and warm start
+Clust_nested linear model  with sampling weights, warm start
 }
