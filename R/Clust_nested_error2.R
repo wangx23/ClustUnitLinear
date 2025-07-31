@@ -1,11 +1,12 @@
-#'Clust_nested linear model without sampling weights
+#'Clust_nested linear model without sampling weights, a different initial and warm start
 #'@param dom vector for domain
 #'@param y response
 #'@param x if needs intercept, need to add before fitting the model
 #'@param index_d the column index for different coef
 #'@export
 
-Clust_nested_error <- function(dom, y, x, index_d, lam,
+Clust_nested_error2 <- function(dom, y, x, index_d, lam,
+                               init0 = NULL, vv0 = NULL,
                                nu = 1, gam = 3, lam0 = 0.001,
                                maxiter= 500,
                                tol = 1e-3)
@@ -15,7 +16,6 @@ Clust_nested_error <- function(dom, y, x, index_d, lam,
   nr <- length(uindex)
   ns <- as.numeric(table(dom))
   nbar <- mean(ns)
-  len_d <- length(index_d)
   ncx <- ncol(x)
 
   wts_tilde <- rep(1/ns, ns)
@@ -50,26 +50,30 @@ Clust_nested_error <- function(dom, y, x, index_d, lam,
   }
 
 
+  if(is.null(init0))
+  {
+    init0 <- initial_nested(dom, y, x, index_d,lam0 = lam0)
+  }
+
+  if(is.null(vv0))
+  {
+    vv0 <- rep(0, nr)
+  }
+
   if(len_d < ncx)
   {
-    z <- x[,-(index_d), drop = FALSE]
-
+    z <-  x[,-(index_d), drop = FALSE] ## common part
 
     #### initial values
 
-    ztz <- solve(t(z) %*% z)%*%t(z)
-    Qz <- diag(1, n0, n0) - z%*% ztz
-    Xty <- t(Xm)%*% Qz %*% y
-    Xinv <- inverseR2(dom, z, x_d, lam0)
-
-    beta00_vec <- Xinv %*% Xty
-    beta00 <-  matrix(beta00_vec,ncol= len_d, byrow = TRUE)
-    eta00 <- ztz %*% (y - Xm %*% beta00_vec)
+    eta00 <- init0$eta
+    beta00 <- init0$betam
+    beta00_vec <- c(t(beta00))
+    vv_cur <-  vv0
 
     deltam <- D %*% beta00
     um <-  matrix(0, nr*(nr-1)/2 , len_d)
-    vv_cur <- rep(0, nr) ### random effects
-    tau00 <- mean((y - z%*% eta00- Xm %*% beta00_vec)^2)
+    tau00 <- mean((y - z%*% eta00- Xm %*% beta00_vec - vv_cur[dom])^2)
 
     eta_cur <- eta00
     beta_cur <- c(t(beta00))
@@ -126,23 +130,22 @@ Clust_nested_error <- function(dom, y, x, index_d, lam,
     out <- list(eta = eta_new, beta = betam_new,
                 tau0 = tau0_new, tau1 = tau1_new, rand = vv_new,
                 betac = beta_c, cluster = cluster_est, loss = l_pql,
-                deltam = deltam, niters = j,
-                beta00 = beta00, eta00 = eta00)
+                deltam = deltam, niters = j, init0 = init0)
   }
+
 
   if(len_d == ncx)
   {
+    #### initial values
 
-    Xty <- t(Xm) %*% y
-    Xinv <- inverseR(dom, x_d, lam0)
-
-    beta00_vec <- Xinv %*% Xty
-    beta00 <-  matrix(beta00_vec,ncol= len_d, byrow = TRUE)
+    beta00 <- init0$betam
+    beta00_vec <- c(t(beta00))
+    vv_cur <- vv0 ### random effects
 
     deltam <- D %*% beta00
     um <-  matrix(0, nr*(nr-1)/2 , len_d)
-    vv_cur <- rep(0, nr) ### random effects
-    tau00 <- mean((y- Xm %*% beta00_vec)^2)
+
+    tau00 <- mean((y - Xm %*% beta00_vec - vv_cur[dom])^2)
 
     beta_cur <- c(t(beta00))
     tau0_cur <- tau00/2
@@ -154,7 +157,6 @@ Clust_nested_error <- function(dom, y, x, index_d, lam,
       wm <- 1/tau0_cur* wts_tilde
 
       ## update beta
-
       Xty <- t(wm * Xm) %*% (y  -  vv_cur[dom])
       Xinv <- inverseR(dom, x_d*sqrt(wm), nu = nu)
       beta_new <-  Xinv %*% (Xty + nu*c(t(deltam -  um/nu) %*% D))
@@ -166,7 +168,7 @@ Clust_nested_error <- function(dom, y, x, index_d, lam,
 
 
       #### update tau0 and tau1 ##
-      tau0_new <- sum(wts_tilde*(y  - Xm %*% beta_new - vv_new[dom])^2)/nr
+      tau0_new <- sum(wts_tilde*(y - Xm %*% beta_new - vv_new[dom])^2)/nr
       tau1_new <- mean(Vinv + vv_new^2)
 
       ###
@@ -193,22 +195,21 @@ Clust_nested_error <- function(dom, y, x, index_d, lam,
 
     l_pql <- n0*log(tau0_new) + sum(vv_new^2)/tau1_new
 
-    out <- list(eta =NULL, beta = betam_new,
+    out <- list(eta = NULL, beta = betam_new,
                 tau0 = tau0_new, tau1 = tau1_new, rand = vv_new,
                 betac = beta_c, cluster = cluster_est, loss = l_pql,
-                deltam = deltam, niters = j,
-                beta00 = beta00)
+                deltam = deltam, niters = j, init0 = init0)
   }
+
 
 
 
   return(out)
 }
 
-
-
 #'@export
-Clust_nested_error_bic <- function(dom, y, x, index_d, lamvec,
+Clust_nested_error_bic2 <- function(dom, y, x, index_d, lamvec,
+                                   init0 = NULL, vv0 = NULL,
                                    nu = 1, gam = 3, lam0 = 0.001,
                                    maxiter= 500,
                                    tol = 1e-3)
@@ -216,16 +217,31 @@ Clust_nested_error_bic <- function(dom, y, x, index_d, lamvec,
   nlam <- length(lamvec)
   K_est <- rep(0, nlam)
   loss_value <- rep(0, nlam)
-  out <- list()
   m <- length(unique(dom))
   n0 <- length(dom)
   len_d <- length(index_d)
 
+  if(is.null(init0))
+  {
+    init0 <- initial_nested(dom, y, x, index_d, lam0 = lam0)
+  }
+
+  if(is.null(vv0))
+  {
+    vv0 <- rep(0, m )
+  }
+
+  out <- list()
+
   for(jj in 1:nlam)
   {
-    resj <- Clust_nested_error(dom, y, x, index_d, lam = lamvec[jj],
+    resj <- Clust_nested_error2(dom, y, x, index_d, lam = lamvec[jj],
+                               init0 = init0, vv0 = vv0,
                                nu = nu, gam = gam, lam0 = lam0,
                                maxiter = maxiter, tol = tol)
+    init0$eta <- resj$eta
+    init0$betam <- resj$beta
+    vv0 <- resj$rand
     out[[jj]] <- resj
     K_est[jj] <- length(unique(resj$cluster))
     loss_value[jj] <- resj$loss
