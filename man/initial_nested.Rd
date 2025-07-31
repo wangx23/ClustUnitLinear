@@ -4,7 +4,7 @@
 \alias{initial_nested}
 \title{initial values functions}
 \usage{
-initial_nested(dom, y, x, index_d, wts = NULL, lam0 = 0.01)
+initial_nested(dom, y, x, index_d, wts = NULL, lam0 = 0.001)
 }
 \arguments{
 \item{dom}{vector for domain}

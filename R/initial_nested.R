@@ -6,7 +6,7 @@
 #'@export
 
 initial_nested <- function(dom, y, x, index_d, wts = NULL,
-                           lam0 = 0.01)
+                           lam0 = 0.001)
 {
 
   n0 <- length(y)
