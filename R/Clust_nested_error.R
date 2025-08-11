@@ -73,8 +73,11 @@ Clust_nested_error <- function(dom, y, x, index_d, lam,
 
     eta_cur <- eta00
     beta_cur <- c(t(beta00))
-    tau0_cur <- tau00/2
-    tau1_cur <- tau00/2
+    # tau0_cur <- tau00/2
+    # tau1_cur <- tau00/2
+
+    tau0_cur <- tau00
+    tau1_cur <- 0.01
 
 
     for(j in 1:maxiter)
@@ -145,9 +148,12 @@ Clust_nested_error <- function(dom, y, x, index_d, lam,
     tau00 <- mean((y- Xm %*% beta00_vec)^2)
 
     beta_cur <- c(t(beta00))
-    tau0_cur <- tau00/2
-    tau1_cur <- tau00/2
 
+    # tau0_cur <- tau00/2
+    # tau1_cur <- tau00/2
+
+    tau0_cur <- tau00
+    tau1_cur <- 0.01
 
     for(j in 1:maxiter)
     {

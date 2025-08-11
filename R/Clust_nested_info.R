@@ -74,8 +74,12 @@ Clust_nested_info <- function(dom, y, x, wts, index_d, lam,
 
     eta_cur <- eta00
     beta_cur <- c(t(beta00))
-    tau0_cur <- tau00/2
-    tau1_cur <- tau00/2
+
+    # tau0_cur <- tau00/2
+    # tau1_cur <- tau00/2
+
+    tau0_cur <- tau00
+    tau1_cur <- 0.01
 
 
     for(j in 1:maxiter)
@@ -151,8 +155,12 @@ Clust_nested_info <- function(dom, y, x, wts, index_d, lam,
 
 
     beta_cur <- c(t(beta00))
-    tau0_cur <- tau00/2
-    tau1_cur <- tau00/2
+
+    # tau0_cur <- tau00/2
+    # tau1_cur <- tau00/2
+
+    tau0_cur <- tau00
+    tau1_cur <- 0.01
 
 
     for(j in 1:maxiter)
@@ -212,7 +220,6 @@ Clust_nested_info <- function(dom, y, x, wts, index_d, lam,
 
 
 }
-
 
 #'@export
 Clust_nested_info_bic <- function(dom, y, x, wts, index_d, lamvec,

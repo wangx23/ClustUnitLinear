@@ -6,10 +6,10 @@
 #'@export
 
 Clust_nested_error2 <- function(dom, y, x, index_d, lam,
-                               init0 = NULL, vv0 = NULL,
-                               nu = 1, gam = 3, lam0 = 0.001,
-                               maxiter= 500,
-                               tol = 1e-3)
+                                init0 = NULL, vv0 = NULL,
+                                nu = 1, gam = 3, lam0 = 0.001,
+                                maxiter= 500,
+                                tol = 1e-3)
 {
   n0 <- length(y)
   uindex <- unique(dom)
@@ -77,8 +77,11 @@ Clust_nested_error2 <- function(dom, y, x, index_d, lam,
 
     eta_cur <- eta00
     beta_cur <- c(t(beta00))
-    tau0_cur <- tau00/2
-    tau1_cur <- tau00/2
+
+    # tau0_cur <- tau00/2
+    # tau1_cur <- tau00/2
+    tau0_cur <- tau00
+    tau1_cur <- max(0.01,var(vv_cur))
 
 
     for(j in 1:maxiter)
@@ -148,8 +151,11 @@ Clust_nested_error2 <- function(dom, y, x, index_d, lam,
     tau00 <- mean((y - Xm %*% beta00_vec - vv_cur[dom])^2)
 
     beta_cur <- c(t(beta00))
-    tau0_cur <- tau00/2
-    tau1_cur <- tau00/2
+
+    # tau0_cur <- tau00/2
+    # tau1_cur <- tau00/2
+    tau0_cur <- tau00
+    tau1_cur <- max(0.01,var(vv_cur))
 
 
     for(j in 1:maxiter)
