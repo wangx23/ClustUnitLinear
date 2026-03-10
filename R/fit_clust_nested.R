@@ -5,6 +5,7 @@
 #'@param x if needs intercept, need to add before fitting the model
 #'@param index_d the column index for different coef
 #'@param wts is the sampling weights
+#'@param cluster the cluster structure.
 #'@import lme4
 #'@export
 

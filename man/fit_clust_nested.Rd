@@ -16,6 +16,8 @@ fit_clust_nested(dom, y, x, wts = NULL, index_d, cluster)
 \item{wts}{is the sampling weights}
 
 \item{index_d}{the column index for different coef}
+
+\item{cluster}{the cluster structure.}
 }
 \description{
 fit the LMM model for a given cluster structure

@@ -5,6 +5,8 @@
 #'@param y response
 #'@param x if needs intercept, need to add before fitting the model
 #'@param index_d the column index for different coef
+#'@importFrom magrittr %>%
+#'@import dplyr
 #'@export
 
 Clust_nested_info2 <- function(dom, y, x, wts, index_d, lam,
